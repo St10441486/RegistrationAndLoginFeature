@@ -9,6 +9,8 @@ import javax.swing.JOptionPane;
 /**
  *
  * @author RC_Student_lab
+ * //st10441486
+ * //Ernest Sebola
  */
 public class RegistrationAndLoginFeature {
 
