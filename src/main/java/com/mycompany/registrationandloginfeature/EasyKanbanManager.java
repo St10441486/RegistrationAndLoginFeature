@@ -7,6 +7,7 @@ package com.mycompany.registrationandloginfeature;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
@@ -17,7 +18,7 @@ import javax.swing.UIManager;
  * Ernest Sebola ST10441486
  */
 public class EasyKanbanManager {
-    private int taskNumber; // To keep track of the task numbers
+    public int taskNumber; // To keep track of the task numbers
 
     public EasyKanbanManager() {
         this.taskNumber = 0; // Initialize task number
@@ -25,28 +26,34 @@ public class EasyKanbanManager {
 
     public void Taskmanager() {
         UIManager.put("OptionPane.messageForeground", Color.BLACK);
-        JOptionPane.showMessageDialog(null, "Finally Login in to EasyKanban how can we help you?");
+        UIManager.put("OptionPane.background", Color.LIGHT_GRAY);
+        UIManager.put("Panel.background", Color.LIGHT_GRAY);
+        JOptionPane.showMessageDialog(null, "Finally Login in to EasyKanban. How can we help you?");
         
         boolean exit = false;
         List<Map<String, String>> tasks = new ArrayList<>();
 
         while (!exit) {
-            
-             
-        String menu = "Choose an option:\n1) Add tasks\n2) Show report\n3) Display tasks\n4) Quit"; 
-        String choice = JOptionPane.showInputDialog(menu); 
-        switch (choice) { 
-            case "1": 
-                addTasks(tasks); 
-                break; 
-            case "2": 
-                showReport(); 
-                break; 
-            case "3": 
-                displayTasks(tasks); 
-                break; 
-            case "4": 
-                JOptionPane.showMessageDialog(null, "Goodbye!"); 
+            String menu = "Choose an option:\n1) Add tasks\n2) Show report\n3) Display tasks\n4) Delete task\n5) Search task\n6) Quit"; 
+            String choice = JOptionPane.showInputDialog(menu); 
+            switch (choice) { 
+                case "1": 
+                    addTasks(tasks); 
+                    break; 
+                case "2": 
+                    showReport(); 
+                    break; 
+                case "3": 
+                    displayTasks(tasks); 
+                    break; 
+                case "4": 
+                    deleteTask(tasks); 
+                    break; 
+                case "5": 
+                    searchTask(tasks); 
+                    break; 
+                case "6": 
+                    JOptionPane.showMessageDialog(null, "Goodbye!"); 
                     exit = true;
                     break;
                 default:
@@ -56,7 +63,6 @@ public class EasyKanbanManager {
     }
 
     private void addTasks(List<Map<String, String>> tasks) {
-        
         int numTasks = Integer.parseInt(JOptionPane.showInputDialog("How many tasks would you like to enter?"));
 
         for (int i = 0; i < numTasks; i++) {
@@ -108,32 +114,70 @@ public class EasyKanbanManager {
         }
     }
 
-    private String generateTaskID(String taskName, int taskNumber, String developerLastName) {
+    public String generateTaskID(String taskName, int taskNumber, String developerLastName) {
         String taskNamePart = taskName.length() >= 2 ? taskName.substring(0, 2) : taskName;
         String taskNumberPart = String.valueOf(taskNumber);
         String developerLastNamePart = developerLastName.length() >= 3 ? developerLastName.substring(developerLastName.length() - 3) : developerLastName;
         return (taskNamePart + ":" + taskNumberPart + ":" + developerLastNamePart).toUpperCase();
-        
     }
 
-    private void showReport() {
+    public void showReport() {
         JOptionPane.showMessageDialog(null, "Coming Soon");
     }
 
-    private void displayTasks(List<Map<String, String>> tasks) {
-    StringBuilder taskList = new StringBuilder(); 
-    for (Map<String, String> task : tasks) { 
-        taskList.append("Task Name: ").append(task.get("Task Name")).append("\n"); 
-        taskList.append("Task Number: ").append(task.get("Task Number")).append("\n"); 
-        taskList.append("Task Description: ").append(task.get("Task Description")).append("\n"); 
-        taskList.append("Developer Details: ").append(task.get("Developer Details")).append("\n"); 
-        taskList.append("Task Duration: ").append(task.get("Task Duration")).append("\n"); 
-        taskList.append("Task ID: ").append(task.get("Task ID")).append("\n"); 
-        taskList.append("Task Status: ").append(task.get("Task Status")).append("\n\n"); 
-    } 
-    JOptionPane.showMessageDialog(null, taskList.toString()); 
-} 
+    public void displayTasks(List<Map<String, String>> tasks) {
+        StringBuilder taskList = new StringBuilder(); 
+        for (Map<String, String> task : tasks) { 
+            taskList.append("Task Name: ").append(task.get("Task Name")).append("\n"); 
+            taskList.append("Task Number: ").append(task.get("Task Number")).append("\n"); 
+            taskList.append("Task Description: ").append(task.get("Task Description")).append("\n"); 
+            taskList.append("Developer Details: ").append(task.get("Developer Details")).append("\n"); 
+            taskList.append("Task Duration: ").append(task.get("Task Duration")).append("\n"); 
+            taskList.append("Task ID: ").append(task.get("Task ID")).append("\n"); 
+            taskList.append("Task Status: ").append(task.get("Task Status")).append("\n\n"); 
+        } 
+        JOptionPane.showMessageDialog(null, taskList.toString()); 
     }
-    
-    
 
+    public void deleteTask(List<Map<String, String>> tasks) {
+        String taskID = JOptionPane.showInputDialog("Enter the Task ID to delete:");
+        Iterator<Map<String, String>> iterator = tasks.iterator();
+        boolean found = false;
+        while (iterator.hasNext()) {
+            Map<String, String> task = iterator.next();
+            if (task.get("Task ID").equals(taskID)) {
+                iterator.remove();
+                found = true;
+                JOptionPane.showMessageDialog(null, "Task deleted successfully.");
+                break;
+            }
+        }
+        if (!found) {
+            JOptionPane.showMessageDialog(null, "Task ID not found.");
+        }
+    }
+
+    public void searchTask(List<Map<String, String>> tasks) {
+        String taskID = JOptionPane.showInputDialog("Enter the Task ID to search:");
+        boolean found = false;
+        for (Map<String, String> task : tasks) {
+            if (task.get("Task ID").equals(taskID)) {
+                StringBuilder taskDetails = new StringBuilder();
+                taskDetails.append("Task Name: ").append(task.get("Task Name")).append("\n");
+                taskDetails.append("Task Number: ").append(task.get("Task Number")).append("\n");
+                taskDetails.append("Task Description: ").append(task.get("Task Description")).append("\n");
+                taskDetails.append("Developer Details: ").append(task.get("Developer Details")).append("\n");
+                taskDetails.append("Task Duration: ").append(task.get("Task Duration")).append("\n");
+                taskDetails.append("Task ID: ").append(task.get("Task ID")).append("\n");
+                taskDetails.append("Task Status: ").append(task.get("Task Status")).append("\n\n");
+                JOptionPane.showMessageDialog(null, taskDetails.toString());
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            JOptionPane.showMessageDialog(null, "Task ID not found.");
+        }
+    }
+
+}
